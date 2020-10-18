@@ -14,11 +14,17 @@ const api = axios.create({
 })
 
 
-const reqGetData = (url) => api.get(url)
+const reqGetData = (url) => api.get(url, {
+    headers: {
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+    }
+})
 
 const reqPostDataJson = (url, token, data) => api.post(url, data)
 
-const reqDownloadFile = (url) => api.get(url,{
+const reqDownloadFile = (url) => api.get(url, {
     responseType: 'blob'
 })
 
@@ -30,7 +36,7 @@ const reqPostMultipartData = (url, token, data) => api.post(url, data, {
 
 export const getDataFile = async (url) => {
     const response = await reqGetData(url);
-    if (response.status === Constant.CODE_SUCCESS) {
+    if (response.ok) {
         const detail = R.path(['data'], response)
         return Promise.resolve(detail)
     }
@@ -40,7 +46,7 @@ export const getDataFile = async (url) => {
 export const getData = async (url) => {
     const response = await reqGetData(url);
     log_common('response getData', response)
-    if (response.status === Constant.CODE_SUCCESS) {
+    if (response.ok) {
         const detail = R.path(['data'], response)
         return Promise.resolve(detail)
     }
@@ -49,7 +55,7 @@ export const getData = async (url) => {
 
 export const getDownloadFile = async (url) => {
     const response = await reqDownloadFile(url);
-    if (response.ok && response.status === 200) {
+    if (response.ok) {
         return Promise.resolve(response)
     }
     return Promise.reject(response)
@@ -57,7 +63,7 @@ export const getDownloadFile = async (url) => {
 
 export const postMultipartData = async (url, data) => {
     const response = await reqPostMultipartData(url, data);
-    if (response.status === Constant.CODE_SUCCESS) {
+    if (response.ok) {
         const data = R.path(['data'], response)
         return Promise.resolve(data)
     }
@@ -66,7 +72,7 @@ export const postMultipartData = async (url, data) => {
 
 export const postDataJson = async (url, data) => {
     const response = await reqPostDataJson(url, data);
-    if (response.status === Constant.CODE_SUCCESS) {
+    if (response.ok) {
         const data = R.path(['data'], response)
         return Promise.resolve(data)
     }

@@ -1,14 +1,21 @@
 import React, {useEffect, useState} from "react";
 import {Container, Table} from "react-bootstrap";
+import {getData} from "../../../api/ApiClient";
+import API from "../../../utils/Api";
+import {log_common} from "../../../utils/Logger";
 
 let Product = (props) => {
     const [path, setPath] = useState("Dashboard/Product");
 
-    // useEffect(() => {
-    //     if (props.path != path) {
-    //         props.changePath(path)
-    //     }
-    // })
+    let getProducts = async () => {
+        let url = API.GET_PRODUCT;
+        let reponse = await getData(url)
+        log_common("RESPONSE", reponse)
+    }
+
+    useEffect(() => {
+        getProducts()
+    })
 
     return(
         <Container fluid>
